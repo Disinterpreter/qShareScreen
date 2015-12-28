@@ -41,22 +41,23 @@ void Frame::on_label_mousePressEvent(QMouseEvent *e)
 void Frame::on_label_mouseReleaseEvent(QMouseEvent *e)
 {
     QPoint position = mouse->pos();
-    qDebug()<<position.x()<<position.y();
-//    if(temp[0] < position.x() || temp[1] < position.y())
-//    {
-//        QRect rect(position.x(), position.y(), abs(temp[0] - position.x()), abs(temp[1] - position.y()));
-//    }
-//    else
-//    {
-
-//    }
-    QRect rect(temp[0], temp[1], abs(temp[0] - position.x()), abs(temp[1] - position.y()));
-    //QRect rect = QRect();
-    //TODO
-    //rect.adjusted( temp[0], temp[1],position.x(), position.y());
-    QPixmap pix = map->copy(rect);
-    //ui->label->setPixmap(pix);
+    QRect *rect = new QRect();
+    if(temp[0] < position.x() || temp[1] < position.y())
+    {
+        rect->setX(position.x());
+        rect->setY(position.y());
+        rect->setWidth(abs(temp[0] - position.x()));
+        rect->setHeight(abs(temp[1] - position.y()));
+    }
+    else
+    {
+        rect->setX(temp[0]);
+        rect->setY(temp[1]);
+        rect->setWidth(abs(temp[0] - position.x()));
+        rect->setHeight(abs(temp[1] - position.y()));
+    }
+    this->destroy();
+    QPixmap pix = map->copy(*rect);
     qDebug()<<"X:"<<temp[0]<<"Y:"<<temp[1]<<"W:"<<abs(temp[0] - position.x())<<"H:"<<abs(temp[1] - position.y());
     pix.save(QString("./screenshot%1.png").arg(1));
-    //qDebug()<<"Release";
 }
