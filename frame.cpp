@@ -4,7 +4,8 @@
 #include <QDesktopWidget>
 
 QCursor *mouse = new QCursor();
-//QVector2D *vec = new QVector2D();
+QPoint startPosition;
+QPoint endPosition;
 
 Frame::Frame(QWidget *parent) :
     QExLabel(parent),
@@ -31,33 +32,35 @@ Frame::~Frame()
 
 void Frame::on_label_mousePressEvent(QMouseEvent *e)
 {
-    QPoint position = mouse->pos();
-    qDebug()<<position.x()<<position.y();
-    temp[0] = position.x();
-    temp[1] = position.y();
+    QPoint startPosition = mouse->pos();
+    startpos[0] = startPosition.x();
+    startpos[1] = startPosition.y();
 
 }
 
 void Frame::on_label_mouseReleaseEvent(QMouseEvent *e)
 {
-    QPoint position = mouse->pos();
+    QPoint endPosition = mouse->pos();
     QRect *rect = new QRect();
-    if(temp[0] < position.x() || temp[1] < position.y())
+    int weight = endPosition.x() - startpos[0];
+    int height = endPosition.y() - startpos[1];
+    if(weight < 0)
     {
-        rect->setX(position.x());
-        rect->setY(position.y());
-        rect->setWidth(abs(temp[0] - position.x()));
-        rect->setHeight(abs(temp[1] - position.y()));
+        startpos[0] = startpos[0] + weight;
+        weight = -weight;
     }
-    else
+    if(height<0)
     {
-        rect->setX(temp[0]);
-        rect->setY(temp[1]);
-        rect->setWidth(abs(temp[0] - position.x()));
-        rect->setHeight(abs(temp[1] - position.y()));
+        startpos[1] = startpos[1] + height;
+        height = -height;
     }
-    this->destroy();
+    rect->setX(startpos[0]);
+    rect->setY(startpos[1]);
+    rect->setWidth(weight);
+    rect->setHeight(height);
+
     QPixmap pix = map->copy(*rect);
-    qDebug()<<"X:"<<temp[0]<<"Y:"<<temp[1]<<"W:"<<abs(temp[0] - position.x())<<"H:"<<abs(temp[1] - position.y());
+
+    this->destroy();
     pix.save(QString("./screenshot%1.png").arg(1));
 }

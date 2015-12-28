@@ -27,7 +27,7 @@ private:
     QCursor *mouse;
     const QPixmap *map;
     //QVector2D *vec;
-    int temp[1] = {};
+    int startpos[1] = {};
 
 };
 
